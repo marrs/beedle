@@ -68,7 +68,9 @@ export default class Store {
         self.status = 'action';
 
         // Actually call the action and pass it the Store context and whatever payload was passed
-        return self.actions[actionKey](self, payload);
+        const result = self.actions[actionKey](self, payload);
+        self.status = 'resting';
+        return result
     }
 
     /**
@@ -99,7 +101,7 @@ export default class Store {
         // Update the old state with the new state returned from our mutation
         self.state = newState;
 
-        return true;
+        return self.processCallbacks(self.state);
     }
 
     /**
@@ -114,11 +116,16 @@ export default class Store {
         const self = this;
 
         if(!self.callbacks.length) {
+            self.status = 'resting';
             return false;
         }
 
+        self.status = 'callback';
+
         // We've got callbacks, so loop each one and fire it off
         self.callbacks.forEach(callback => callback(data));
+
+        self.status = 'resting';
 
         return true;
     }
