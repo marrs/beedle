@@ -34,7 +34,10 @@ export default class Store {
 
                 // Fire off our callback processor because if there's listeners,
                 // they're going to want to know that something has changed
-                self.processCallbacks(self.state);
+                // XXX: Disabling as I don't like the idea of processing
+                // the callbacks until all state has been updated.
+                // Processing after mutations have completed instead.
+                //self.processCallbacks(self.state);
 
                 // Reset the status ready for the next operation
                 self.status = 'resting';
