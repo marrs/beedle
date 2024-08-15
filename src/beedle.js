@@ -23,39 +23,7 @@ export default class Store {
             self.mutations = params.mutations;
         }
 
-        // Set our state to be a Proxy. We are setting the default state by
-        // checking the params and defaulting to an empty object if no default
-        // state is passed in
-        self.state = new Proxy((params.initialState || {}), {
-            // @marrs:
-            //   I have issues with this setter.  I've disabled
-            // both the call to self.processCallbacks and the resetting
-            // of self.status because I'm pretty sure a mutation event
-            // may want to set more than one property of an object.
-            //
-            //   The way this is set up, processCallbacks may be
-            // called multiple times per mutation and status will be
-            // reset prematurely.
-            //
-            //   I've moved these calls to after the entire state has
-            // been mutated for the dispatched action.
-            set(state, key, value) {
-
-                // Set the value as we would normally
-                state[key] = value;
-
-                // Fire off our callback processor because if there's listeners,
-                // they're going to want to know that something has changed
-                // XXX: Disabled. See above.
-                //self.processCallbacks(self.state);
-
-                // Reset the status ready for the next operation
-                // XXX: Disabled. See above.
-                //self.status = 'resting';
-
-                return true;
-            }
-        });
+        self.state = params.initialState || {};
     }
 
     /**
